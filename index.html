@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ROHIT // NEXUS</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Share+Tech+Mono&display=swap');
+:root{--g:#00ff9d;--b:#00d9ff;--p:#ff28d7;--bg:#020508;--panel:#071016;--line:#16423f;--txt:#d9fff2;--muted:#6d928b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--txt);font-family:"Share Tech Mono",monospace;overflow-x:hidden}
+#scene{position:fixed;inset:0;z-index:-3}#stars{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.7}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(0deg,transparent 0 3px,#00ff9d06 4px);mix-blend-mode:screen}
+.boot{position:fixed;inset:0;z-index:9999;background:#000;display:grid;place-items:center;padding:22px;transition:1s}
+.boot.hide{opacity:0;pointer-events:none}.bootbox{width:min(850px,100%);text-align:left}
+.logo{font:900 clamp(28px,7vw,78px) Orbitron;color:#fff;text-align:center;letter-spacing:3px;text-shadow:0 0 8px var(--g),3px 0 var(--p),-3px 0 var(--b)}
+.bootsub{text-align:center;color:var(--g);margin:14px 0 25px}
+.bootlog{height:190px;overflow:hidden;border:1px solid #00ff9d55;background:#020605;padding:16px;color:#79ffc7;line-height:1.7;box-shadow:inset 0 0 30px #00ff9d10}
+.progress{height:5px;background:#09221c;margin-top:16px}.progress i{display:block;width:0;height:100%;background:var(--g);box-shadow:0 0 18px var(--g);animation:load 3.8s forwards}@keyframes load{to{width:100%}}
+header{position:sticky;top:0;z-index:100;background:#02070be8;backdrop-filter:blur(16px);border-bottom:1px solid #00ff9d33;padding:12px 4%;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.brand{font:800 16px Orbitron;color:var(--g);text-shadow:0 0 12px var(--g)}.live{font-size:11px;color:var(--b)}
+nav{display:flex;gap:7px;flex-wrap:wrap}button{font:700 11px "Share Tech Mono";letter-spacing:1px;color:var(--g);background:#04100d;border:1px solid #00ff9d55;padding:10px 13px;cursor:pointer;min-height:40px;transition:.2s}button:hover{border-color:var(--p);color:#fff;box-shadow:0 0 18px #ff28d733;transform:translateY(-2px)}button.primary{background:linear-gradient(135deg,#00ff9d22,#00d9ff18);border-color:var(--b)}
+main{width:min(1450px,94%);margin:auto;padding:22px 0 70px}.hero{min-height:510px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center}
+.heroCopy{position:relative;z-index:2}.eyebrow{color:var(--p);font-size:12px;letter-spacing:3px}.hero h1{font:900 clamp(38px,7vw,92px) Orbitron;line-height:.95;margin:16px 0;color:#fff;text-shadow:4px 0 var(--p),-4px 0 var(--b),0 0 35px #00ff9d55}.hero p{color:#91b9b0;max-width:680px;font-size:15px;line-height:1.7}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.holo{height:390px;position:relative;display:grid;place-items:center;perspective:900px}.ring{position:absolute;border:1px solid var(--g);border-radius:50%;box-shadow:0 0 20px #00ff9d55;animation:spin 10s linear infinite}.r1{width:260px;height:260px;transform:rotateX(68deg)}.r2{width:210px;height:210px;border-color:var(--b);transform:rotateY(68deg);animation-duration:7s;animation-direction:reverse}.r3{width:310px;height:310px;border-color:var(--p);transform:rotateX(68deg) rotateZ(25deg);animation-duration:15s}.core{width:100px;height:100px;transform:rotate(45deg);border:2px solid var(--g);box-shadow:0 0 35px var(--g),inset 0 0 35px #00ff9d55;animation:core 2s ease-in-out infinite alternate}.core:after{content:"";display:block;width:100%;height:100%;border:2px solid var(--p;);transform:scale(.55)}@keyframes spin{to{transform:rotateX(68deg) rotateZ(360deg)}}@keyframes core{to{transform:rotate(225deg) scale(1.12)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.section{margin-top:38px}.section h2{font:800 18px Orbitron;color:var(--b);border-left:4px solid var(--p);padding-left:11px}
+.card{background:linear-gradient(145deg,#071219e8,#03090de8);border:1px solid var(--line);padding:17px;position:relative;overflow:hidden;min-height:145px;transform-style:preserve-3d;transition:.25s}.card:before{content:"";position:absolute;inset:-100%;background:linear-gradient(120deg,transparent 45%,#00ff9d10 50%,transparent 55%);transform:translateX(-30%) rotate(8deg);transition:.5s}.card:hover:before{transform:translateX(30%) rotate(8deg)}.card:hover{border-color:#00ff9d88;box-shadow:0 0 25px #00ff9d14;transform:translateY(-4px) perspective(700px) rotateX(2deg)}
+.card h3{margin:0 0 8px;font:700 13px Orbitron;color:var(--g)}.card p{font-size:12px;color:var(--muted);line-height:1.55}.value{font:800 27px Orbitron;color:var(--b);margin:8px 0}
+input,textarea,select{width:100%;background:#010506;border:1px solid #00ff9d38;color:var(--txt);padding:11px;font:13px "Share Tech Mono";outline:none;margin:5px 0 9px}textarea{min-height:95px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--b);box-shadow:0 0 12px #00d9ff18}
+.panel{border:1px solid #00d9ff35;background:#02090de8;padding:16px}.terminal{height:330px;overflow:auto;background:#000;padding:16px;line-height:1.65;border:1px solid #00ff9d55;color:#8fffd0}.prompt{color:var(--p)}.termrow{display:flex;gap:8px}.termrow input{margin:0}.terminal .ok{color:var(--g)}.terminal .warn{color:#ffd45e}
+.meter{height:7px;background:#0a211b;margin:10px 0}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--b),var(--g));width:0;transition:.7s}
+canvas#radar{width:100%;height:300px;border:1px solid #00ff9d30;background:#010505}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:9px;border-bottom:1px solid #12312d;text-align:left}th{color:var(--b)}
+footer{text-align:center;color:#496760;padding:30px;font-size:11px}.toast{position:fixed;right:18px;bottom:18px;z-index:200;background:#020908;border:1px solid var(--g);padding:12px 15px;color:var(--g);opacity:0;transform:translateY(15px);transition:.25s}.toast.show{opacity:1;transform:none}
+#gameCanvas{width:100%;height:260px;background:#000;border:1px solid #00ff9d35;cursor:crosshair}.small{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.hero{grid-template-columns:1fr;min-height:auto;padding:35px 0}.holo{height:280px}.hero h1{font-size:clamp(38px,12vw,70px)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="scene"></div><canvas id="stars"></canvas>
+
+<div class="boot" id="boot">
+ <div class="bootbox">
+  <div class="logo">ROHIT // NEXUS</div>
+  <div class="bootsub">PRIVATE CYBER WORKSTATION • INITIALIZING</div>
+  <div class="bootlog" id="bootlog"></div>
+  <div class="progress"><i></i></div>
+ </div>
+</div>
+
+<header>
+ <div><div class="brand">ROHIT://NEXUS</div><div class="live">● LOCAL WORKSTATION ONLINE</div></div>
+ <nav>
+  <button data-scroll="dashboard">DASHBOARD</button><button data-scroll="tools">TOOLS</button><button data-scroll="terminal">TERMINAL</button><button data-scroll="games">GAMES</button><button id="soundBtn">🔊 SOUND ON</button>
+ </nav>
+</header>
+
+<main>
+<section class="hero">
+ <div class="heroCopy">
+  <div class="eyebrow">PRIVATE // PERSONAL // CYBER LAB</div>
+  <h1>ROHIT'S<br>NEXUS</h1>
+  <p>3D personal command center for coding utilities, security learning, diagnostics, encryption labs, productivity tools and games — designed with a cinematic cyber interface.</p>
+  <div class="actions"><button class="primary" id="initBtn">INITIALIZE SYSTEM</button><button id="scanBtn">RUN LOCAL DIAGNOSTICS</button><button id="themeBtn">SHIFT THEME</button></div>
+ </div>
+ <div class="holo"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core"></div></div>
+</section>
+
+<section class="section" id="dashboard">
+<h2>01 // LIVE CORE</h2>
+<div class="grid">
+ <div class="card"><h3>LOCAL CLOCK</h3><div class="value" id="clock">--:--:--</div><p id="date">---</p></div>
+ <div class="card"><h3>SESSION</h3><div class="value" id="session">00:00</div><p>Current browser session.</p></div>
+ <div class="card"><h3>NETWORK STATE</h3><div class="value" id="net">ONLINE</div><p id="netDetail">Browser connectivity state.</p></div>
+ <div class="card"><h3>DEVICE CORES</h3><div class="value" id="cores">--</div><p>Logical processor count exposed by browser.</p></div>
+ <div class="card"><h3>DISPLAY</h3><div class="value" id="display">--</div><p>Current screen resolution.</p></div>
+ <div class="card"><h3>SECURITY MODE</h3><div class="value">SAFE</div><p>Local/educational tools only.</p></div>
+</div>
+</section>
+
+<section class="section" id="tools">
+<h2>02 // REAL LOCAL TOOLKIT</h2>
+<div class="grid">
+ <div class="card"><h3>01 • SHA-256</h3><input id="hashIn" placeholder="Text to hash"><button id="hashBtn">HASH</button><textarea id="hashOut" readonly></textarea></div>
+ <div class="card"><h3>02 • PASSWORD LAB</h3><input id="pwLen" type="number" min="8" max="64" value="20"><button id="pwBtn">GENERATE</button><input id="pwOut" readonly></div>
+ <div class="card"><h3>03 • BASE64</h3><textarea id="b64In" placeholder="Text"></textarea><button id="encBtn">ENCODE</button><button id="decBtn">DECODE</button><textarea id="b64Out"></textarea></div>
+ <div class="card"><h3>04 • JSON FORMATTER</h3><textarea id="jsonIn" placeholder='{"rohit":"nexus"}'></textarea><button id="jsonBtn">FORMAT</button><textarea id="jsonOut"></textarea></div>
+ <div class="card"><h3>05 • URL LAB</h3><input id="urlIn" placeholder="Text / URL"><button id="urlEnc">ENCODE</button><button id="urlDec">DECODE</button><textarea id="urlOut"></textarea></div>
+ <div class="card"><h3>06 • TEXT ANALYZER</h3><textarea id="textIn" placeholder="Paste text"></textarea><p>Characters: <b id="charCount">0</b> • Words: <b id="wordCount">0</b> • Lines: <b id="lineCount">0</b></p></div>
+ <div class="card"><h3>07 • UUID</h3><button id="uuidBtn">GENERATE UUID</button><input id="uuidOut" readonly></div>
+ <div class="card"><h3>08 • TIMESTAMP</h3><button id="stampBtn">CURRENT TIMESTAMP</button><input id="stampOut" readonly></div>
+ <div class="card"><h3>09 • RANDOM LAB</h3><input id="rMin" type="number" value="1"><input id="rMax" type="number" value="9999"><button id="randBtn">GENERATE</button><div class="value" id="randOut">----</div></div>
+ <div class="card"><h3>10 • CALCULATOR</h3><input id="calcIn" placeholder="25*(4+2)"><button id="calcBtn">CALCULATE</button><div class="value" id="calcOut">0</div></div>
+ <div class="card"><h3>11 • COLOR DNA</h3><input id="color" type="color" value="#00ff9d"><button id="colorBtn">APPLY ACCENT</button></div>
+ <div class="card"><h3>12 • LOCAL NOTES</h3><textarea id="notes" placeholder="Saved in this browser only"></textarea><button id="saveNotes">SAVE NOTES</button></div>
+</div>
+</section>
+
+<section class="section">
+<h2>03 // SECURITY LEARNING LAB</h2>
+<div class="grid">
+ <div class="card"><h3>13 • PASSWORD AUDIT</h3><input id="auditPw" type="password" placeholder="Evaluate your own password"><div class="meter"><i id="pwMeter"></i></div><p id="auditResult">Enter a password to evaluate it locally.</p></div>
+ <div class="card"><h3>14 • LOG ANALYZER</h3><textarea id="logIn">INFO login successful
+WARNING unusual request
+ERROR timeout
+INFO backup complete</textarea><button id="logBtn">ANALYZE</button><p id="logOut"></p></div>
+ <div class="card"><h3>15 • PHISHING CHECK</h3><textarea id="phishIn" placeholder="Paste a suspicious message or URL"></textarea><button id="phishBtn">ANALYZE LOCALLY</button><p id="phishOut"></p></div>
+ <div class="card"><h3>16 • TEXT ENCRYPTION LAB</h3><input id="shiftKey" type="number" value="3" min="-25" max="25"><textarea id="shiftIn" placeholder="Educational Caesar transformation"></textarea><button id="shiftBtn">TRANSFORM</button><textarea id="shiftOut"></textarea></div>
+ <div class="card"><h3>17 • LOCAL DIAGNOSTICS</h3><button id="diagBtn">RUN</button><p id="diagOut">No diagnostic running.</p></div>
+ <div class="card"><h3>18 • BROWSER FEATURES</h3><button id="browserBtn">INSPECT</button><p id="browserOut"></p></div>
+</div>
+</section>
+
+<section class="section" id="terminal">
+<h2>04 // NEXUS TERMINAL</h2>
+<div class="panel">
+ <div class="terminal" id="termOut"><div class="ok">ROHIT NEXUS TERMINAL v2.0</div><div>Local command environment ready.</div><div>Type <span class="prompt">help</span> for commands.</div><br></div>
+ <div class="termrow"><span class="prompt">rohit@nexus:~$</span><input id="termIn" placeholder="help"></div>
+</div>
+</section>
+
+<section class="section">
+<h2>05 // 3D SIGNAL RADAR</h2>
+<div class="panel"><canvas id="radar" width="1000" height="300"></canvas><p class="small">Visualizes local browser-generated signal data only. It does not scan networks or devices.</p></div>
+</section>
+
+<section class="section" id="games">
+<h2>06 // CYBER ARCADE</h2>
+<div class="grid">
+ <div class="card"><h3>19 • NUMBER HACK</h3><p>Guess a number from 1–100.</p><input id="guess" type="number"><button id="guessBtn">TRY</button><p id="guessOut"></p></div>
+ <div class="card"><h3>20 • REACTION CORE</h3><button id="reactBtn">START</button><p id="reactOut">Press START.</p></div>
+ <div class="card"><h3>21 • CODE BREAKER</h3><p>Break a generated 3-digit code.</p><input id="codeGuess" maxlength="3" inputmode="numeric"><button id="codeBtn">TRY</button><p id="codeOut"></p></div>
+ <div class="card"><h3>22 • NEON DODGE</h3><p>Move the player with ← → and dodge falling blocks.</p><canvas id="gameCanvas" width="600" height="260"></canvas><button id="gameBtn">START GAME</button><p id="gameOut">Ready.</p></div>
+</div>
+</section>
+
+<section class="section">
+<h2>07 // MODULE MATRIX</h2>
+<div class="grid">
+<div class="card"><h3>23 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>24 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>25 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>26 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>27 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>28 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>29 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>30 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>31 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>32 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>33 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>34 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>35 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>36 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>37 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>38 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>39 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>40 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>41 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>42 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>43 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>44 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>45 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>46 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>47 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>48 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>49 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>50 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>51 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>52 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>53 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>54 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>55 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div><div class="card"><h3>56 • NEXUS MODULE</h3><p>Ready • Local browser module • Tap to explore the core interface.</p></div>
+</div>
+</section>
+</main>
+
+<footer>ROHIT // NEXUS • PERSONAL CYBER WORKSTATION • BUILT FOR LOCAL, EDUCATIONAL AND CREATIVE USE</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+(()=> {
+"use strict";
+const $=id=>document.getElementById(id), root=document.documentElement;
+let audio=null, sound=true, sessionStart=Date.now(), themeIndex=0;
+function toast(s){const t=$("toast");t.textContent=s;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),1800)}
+function tone(freq=600,d=.06,type="square"){if(!sound)return;try{audio ||= new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch{}}
+document.addEventListener("pointerdown",()=>{if(!audio)tone(520,.04,"sine")},{once:true});
+const bootLines=["[ BIOS ] NEXUS CORE DETECTED","[ OK ] Loading 3D rendering engine","[ OK ] Loading local cryptography module","[ OK ] Loading utility matrix","[ OK ] Loading cyber arcade","[ OK ] Audio interface armed","[ OK ] Local security sandbox active","[ READY ] ROHIT NEXUS ONLINE"];
+let bi=0;const bl=$("bootlog");const bootTimer=setInterval(()=>{bl.innerHTML+=bootLines[bi]+"<br>";tone(240+bi*55,.05);bi++;if(bi>=bootLines.length){clearInterval(bootTimer);setTimeout(()=>$("boot").classList.add("hide"),700)}},420);
+
+document.querySelectorAll("[data-scroll]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.scroll).scrollIntoView({behavior:"smooth"})));
+$("soundBtn").addEventListener("click",()=>{sound=!sound;$("soundBtn").textContent=sound?"🔊 SOUND ON":"🔇 SOUND OFF";if(sound)tone(760,.08);toast(sound?"Audio enabled":"Audio disabled")});
+$("initBtn").addEventListener("click",()=>{for(let i=0;i<4;i++)setTimeout(()=>tone(300+i*180,.08),i*100);toast("NEXUS CORE INITIALIZED")});
+$("themeBtn").addEventListener("click",()=>{themeIndex=(themeIndex+1)%4;const a=[["#00ff9d","#00d9ff","#ff28d7"],["#39ff14","#00ffff","#ff1493"],["#7cff00","#6f7cff","#ff3bbd"],["#00ffc8","#1d8cff","#ff007f"]][themeIndex];root.style.setProperty("--g",a[0]);root.style.setProperty("--b",a[1]);root.style.setProperty("--p",a[2]);tone(880,.08);toast("Theme shifted")});
+$("scanBtn").addEventListener("click",()=>{$("diagBtn").click()});
+$("colorBtn").addEventListener("click",()=>{root.style.setProperty("--g",$("color").value);toast("Accent updated");tone(720,.06)});
+
+function updateCore(){const d=new Date();$("clock").textContent=d.toLocaleTimeString();$("date").textContent=d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"short",day:"numeric"});const s=Math.floor((Date.now()-sessionStart)/1000);$("session").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");$("net").textContent=navigator.onLine?"ONLINE":"OFFLINE";$("cores").textContent=navigator.hardwareConcurrency||"N/A";$("display").textContent=screen.width+"×"+screen.height}setInterval(updateCore,1000);updateCore();
+
+$("hashBtn").addEventListener("click",async()=>{const x=$("hashIn").value;if(!x){$("hashOut").value="Enter text first.";return}const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(x));$("hashOut").value=[...new Uint8Array(h)].map(v=>v.toString(16).padStart(2,"0")).join("");tone(700,.06)});
+$("pwBtn").addEventListener("click",()=>{let n=Math.max(8,Math.min(64,Number($("pwLen").value)||20));const c="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*_-+=";let p="";for(let i=0;i<n;i++)p+=c[Math.floor(Math.random()*c.length)];$("pwOut").value=p;tone(820,.06)});
+$("encBtn").addEventListener("click",()=>{try{$("b64Out").value=btoa(unescape(encodeURIComponent($("b64In").value)))}catch{$("b64Out").value="Invalid text"}});$("decBtn").addEventListener("click",()=>{try{$("b64Out").value=decodeURIComponent(escape(atob($("b64In").value)))}catch{$("b64Out").value="Invalid Base64"}});
+$("jsonBtn").addEventListener("click",()=>{try{$("jsonOut").value=JSON.stringify(JSON.parse($("jsonIn").value),null,2)}catch{$("jsonOut").value="Invalid JSON"}});
+$("urlEnc").addEventListener("click",()=>{$("urlOut").value=encodeURIComponent($("urlIn").value)});$("urlDec").addEventListener("click",()=>{try{$("urlOut").value=decodeURIComponent($("urlIn").value)}catch{$("urlOut").value="Invalid encoding"}});
+$("textIn").addEventListener("input",()=>{const x=$("textIn").value;$("charCount").textContent=x.length;$("wordCount").textContent=x.trim()?x.trim().split(/\s+/).length:0;$("lineCount").textContent=x?x.split(/\r?\n/).length:0});
+$("uuidBtn").addEventListener("click",()=>{$("uuidOut").value=crypto.randomUUID()});$("stampBtn").addEventListener("click",()=>{$("stampOut").value=Date.now()});
+$("randBtn").addEventListener("click",()=>{let a=Number($("rMin").value),b=Number($("rMax").value);if(!Number.isFinite(a)||!Number.isFinite(b)){toast("Enter valid limits");return}[a,b]=a<=b?[a,b]:[b,a];$("randOut").textContent=Math.floor(Math.random()*(b-a+1))+a});
+$("calcBtn").addEventListener("click",()=>{const x=$("calcIn").value.trim();if(!/^[0-9+\-*/().%\s]+$/.test(x)){ $("calcOut").textContent="Invalid";return}try{$("calcOut").textContent=String(Function('"use strict";return ('+x+')')())}catch{$("calcOut").textContent="Invalid"}});
+$("saveNotes").addEventListener("click",()=>{localStorage.setItem("rohitNexusNotes",$("notes").value);toast("Notes saved locally");tone(620,.06)});$("notes").value=localStorage.getItem("rohitNexusNotes")||"";
+
+$("auditPw").addEventListener("input",()=>{const p=$("auditPw").value;let s=0;if(p.length>=10)s++;if(/[A-Z]/.test(p))s++;if(/[a-z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^A-Za-z0-9]/.test(p))s++;$("pwMeter").style.width=(s/5*100)+"%";$("auditResult").textContent=s<3?"Needs improvement":s<5?"Moderate":"Strong local password pattern"});
+$("logBtn").addEventListener("click",()=>{const x=$("logIn").value;$("logOut").textContent="ERROR: "+(x.match(/error/gi)||[]).length+" • WARNING: "+(x.match(/warning/gi)||[]).length+" • INFO: "+(x.match(/info/gi)||[]).length});
+$("phishBtn").addEventListener("click",()=>{const x=$("phishIn").value.toLowerCase(), flags=[];if(/urgent|immediately|verify now|account suspended/.test(x))flags.push("urgent language");if(/password|otp|pin|payment/.test(x))flags.push("credential/payment request");if(/bit\.ly|tinyurl|t\.co/.test(x))flags.push("shortened link");$("phishOut").textContent=flags.length?"Review carefully: "+flags.join(", ")+".":"No simple warning pattern detected. This is not proof that a message is safe."});
+$("shiftBtn").addEventListener("click",()=>{let k=Math.max(-25,Math.min(25,Number($("shiftKey").value)||0));$("shiftOut").value=[...$("shiftIn").value].map(ch=>{const c=ch.charCodeAt(0);if(c>=65&&c<=90)return String.fromCharCode((c-65+k+26)%26+65);if(c>=97&&c<=122)return String.fromCharCode((c-97+k+26)%26+97);return ch}).join("")});
+$("diagBtn").addEventListener("click",()=>{const checks=["Checking browser APIs","Checking crypto API","Checking local storage","Checking display","Checking connectivity"];let i=0;$("diagOut").textContent="";const t=setInterval(()=>{$("diagOut").textContent+=checks[i]+" ... OK\n";tone(350+i*80,.04);i++;if(i===checks.length){clearInterval(t);$("diagOut").textContent+="DIAGNOSTICS COMPLETE";toast("Diagnostics complete")}},350)});
+$("browserBtn").addEventListener("click",()=>{$("browserOut").textContent="Language: "+navigator.language+" • Platform: "+navigator.platform+" • Cookies: "+(navigator.cookieEnabled?"enabled":"disabled")});
+
+const term=$("termOut"),ti=$("termIn");function print(s,c=""){term.innerHTML+=`<div class="${c}">${s}</div>`;term.scrollTop=term.scrollHeight}function command(){const c=ti.value.trim().toLowerCase();if(!c)return;print('<span class="prompt">rohit@nexus:~$</span> '+c);const cmds={help:"Commands: help • status • date • about • tools • clear • whoami • diagnostics",status:"NEXUS ONLINE • SAFE LOCAL MODE",date:new Date().toString(),about:"ROHIT NEXUS — personal browser cyber workstation.",tools:"12 real local utilities + security learning lab + arcade loaded.",whoami:"rohit@nexus (local interface identity)",diagnostics:"Run the Diagnostics module for browser-side checks."};if(c==="clear")term.innerHTML="";else print(cmds[c]||"Unknown command. Type help.");ti.value="";tone(560,.04)}ti.addEventListener("keydown",e=>{if(e.key==="Enter")command()});term.addEventListener("click",()=>ti.focus());
+
+let secret=Math.floor(Math.random()*100)+1;$("guessBtn").addEventListener("click",()=>{const n=Number($("guess").value);if(n===secret){$("guessOut").textContent="Correct! New code generated.";secret=Math.floor(Math.random()*100)+1}else $("guessOut").textContent=n<secret?"Higher":"Lower";tone(500,.05)});
+let reactionStart=0,reactionTimer=null;function reaction(){const b=$("reactBtn"),o=$("reactOut");b.disabled=true;o.textContent="WAIT...";reactionTimer=setTimeout(()=>{reactionStart=performance.now();o.textContent="GO! PRESS BUTTON";b.disabled=false;b.dataset.go="1";tone(1000,.08)},700+Math.random()*2600)}$("reactBtn").addEventListener("click",()=>{if($("reactBtn").dataset.go){$("reactOut").textContent="Reaction: "+Math.round(performance.now()-reactionStart)+" ms";$("reactBtn").dataset.go="";$("reactBtn").textContent="START"}else reaction()});
+let code=String(Math.floor(100+Math.random()*900));$("codeBtn").addEventListener("click",()=>{const g=$("codeGuess").value;if(!/^\d{3}$/.test(g)){ $("codeOut").textContent="Enter exactly 3 digits.";return}let exact=0;for(let i=0;i<3;i++)if(g[i]===code[i])exact++;$("codeOut").textContent=g===code?"CODE BROKEN! New code generated.":"Exact positions: "+exact+"/3";if(g===code)code=String(Math.floor(100+Math.random()*900))});
+
+const rc=$("radar"),rx=rc.getContext("2d");let ra=0;function radar(){ra+=.018;rx.clearRect(0,0,rc.width,rc.height);const cx=rc.width/2,cy=rc.height/2,r=Math.min(cx,cy)-18;rx.strokeStyle="#00ff9d55";for(let i=1;i<=4;i++){rx.beginPath();rx.arc(cx,cy,r*i/4,0,Math.PI*2);rx.stroke()}for(let i=0;i<8;i++){const a=i*Math.PI/4;rx.beginPath();rx.moveTo(cx,cy);rx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);rx.stroke()}rx.strokeStyle="#00d9ff";rx.beginPath();rx.moveTo(cx,cy);rx.lineTo(cx+Math.cos(ra)*r,cy+Math.sin(ra)*r);rx.stroke();for(let i=0;i<10;i++){const a=(i*1.91)%6.28,d=.25+(i*.067%0.7);rx.fillStyle=i%3===0?"#ff28d7":"#00ff9d";rx.beginPath();rx.arc(cx+Math.cos(a)*r*d,cy+Math.sin(a)*r*d,3,0,7);rx.fill()}requestAnimationFrame(radar)}radar();
+
+const gc=$("gameCanvas"),gx=gc.getContext("2d");let playing=false,px=285,blocks=[],score=0,last=0;function gameLoop(t){if(!playing)return;const dt=Math.min(.03,(t-last)/1000);last=t;gx.clearRect(0,0,600,260);gx.fillStyle="#00ff9d";gx.fillRect(px,230,30,15);if(Math.random()<dt*2.5)blocks.push({x:Math.random()*570,y:-20,s:18+Math.random()*20,v:100+Math.random()*100});blocks.forEach(b=>b.y+=b.v*dt);blocks=blocks.filter(b=>b.y<280);for(const b of blocks){gx.fillStyle="#ff28d7";gx.fillRect(b.x,b.y,b.s,b.s);if(b.x<px+30&&b.x+b.s>px&&b.y<245&&b.y+b.s>225){playing=false;$("gameOut").textContent="GAME OVER • Score "+score;return}}score+=dt;$("gameOut").textContent="Score "+Math.floor(score);requestAnimationFrame(gameLoop)}document.addEventListener("keydown",e=>{if(!playing)return;if(e.key==="ArrowLeft")px=Math.max(0,px-25);if(e.key==="ArrowRight")px=Math.min(570,px+25)});$("gameBtn").addEventListener("click",()=>{playing=true;px=285;blocks=[];score=0;last=performance.now();$("gameOut").textContent="RUNNING";requestAnimationFrame(gameLoop)});
+
+const sc=$("stars"),sx=sc.getContext("2d");function resize(){sc.width=innerWidth;sc.height=innerHeight}resize();addEventListener("resize",resize);let stars=Array.from({length:130},()=>({x:Math.random(),y:Math.random(),z:Math.random()}));function starLoop(){sx.clearRect(0,0,sc.width,sc.height);for(const s of stars){s.y+=.00025*(1.2-s.z);if(s.y>1)s.y=0;const x=s.x*sc.width,y=s.y*sc.height,sz=.5+s.z*2;sx.fillStyle=s.z>.6?"#00ff9d":"#00d9ff";sx.fillRect(x,y,sz,sz)}requestAnimationFrame(starLoop)}starLoop();
+
+if(window.THREE){const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,1000),ren=new THREE.WebGLRenderer({alpha:true,antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setSize(innerWidth,innerHeight);$("scene").appendChild(ren.domElement);const group=new THREE.Group();scene.add(group);const geo=new THREE.IcosahedronGeometry(2.2,2),mat=new THREE.MeshBasicMaterial({color:0x00ff9d,wireframe:true,transparent:true,opacity:.16});const mesh=new THREE.Mesh(geo,mat);group.add(mesh);const geo2=new THREE.TorusGeometry(3.2,.008,8,180),m2=new THREE.MeshBasicMaterial({color:0xff28d7,transparent:true,opacity:.45});const tor=new THREE.Mesh(geo2,m2);tor.rotation.x=.9;group.add(tor);cam.position.z=8;function three(){group.rotation.x+=.0009;group.rotation.y+=.0014;tor.rotation.z+=.002;ren.render(scene,cam);requestAnimationFrame(three)}three();addEventListener("resize",()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight)})}
+})();
+</script>
+</body>
+</html>
